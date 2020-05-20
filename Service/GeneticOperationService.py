@@ -24,18 +24,18 @@ class GeneticOperationService:
 
         M = 0.03
         for gen in individual.Chromatine1:
-            rnd = random.randint(1, 300)
+            rnd = random.randint(1, 33) #3% na mutację
             if(rnd == 1):
                 gen = 1
 
         for gen in individual.Chromatine2:
-            rnd = random.randint(1, 300)
+            rnd = random.randint(1, 33) #3% na mutację
             if(rnd == 1):
                 gen = 1;
         return individual
 
     def __CrosingOver(self, individual):
-        rnd_crossingOver = random.randint(1, 300)
+        rnd_crossingOver = random.randint(1, 33)
         if(rnd_crossingOver == 1):
             rnd_loci = random.randint(0, len(individual.Chromatine1))
             while(rnd_loci > len(individual.Chromatine1)):
@@ -56,7 +56,7 @@ class GeneticOperationService:
         newborn.Sex = random.randint(0, 1)
         newborn.ProcreationAge = 16
         newborn.Age = 1
-        newborn.T = 40
+        newborn.T = 0
         newborn.Genotype.append(newborn.Chromatine1)
         newborn.Genotype.append(newborn.Chromatine2)
         return newborn

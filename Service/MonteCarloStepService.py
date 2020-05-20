@@ -1,5 +1,6 @@
 from Factory.IndividualFactory import IndividualFactory
 from Service.GeneticOperationService import GeneticOperationService
+import random
 
 class MonteCarloStepService:
 
@@ -15,17 +16,23 @@ class MonteCarloStepService:
         split_population = self.__SplitPopulation(procreation_population)
         population = self.__Procreate(split_population, population)
 
-        for individ in population:
-            if individ.Age >= param_T:
-                population.remove(individ)
-
     def __CalculateGeneticAge(self, population, param_T): #określ wiek na podstawie kroku MonteCarlo
         for individual in population:
+            individual.Age += 1
+            deleted_individ = False
             for loci, index in enumerate(individual.Chromatine1):
                 if(loci == 1 and individual.Chromatine2[index] == 1):
-                    individual.Age += 1
-                    if individual.Age >= param_T:
+                    individual.T += 1
+                    if individual.T >= param_T:
+                        print("Z powodów genetycznych umarł osobnik w wieku: " + str(individual.Age))
                         population.remove(individual) #pora umierać.
+                        deleted_individ = True
+
+            time_to_die = random.randint(0, 5)
+            if individual.Age >= 80 and deleted_individ == False:
+                if time_to_die == 1:
+                    population.remove(individual)
+                    print("RIP ze starości osobnik w wieku: " + str(individual.Age))
 
     def __CheckGeneticAge(self, population, param_R): #znajdź osobniki w wieku pozwalającym na rozród
         procreation_population = []
@@ -57,15 +64,13 @@ class MonteCarloStepService:
             genOps.MutateIndividual(menindivid)
             genOps.CrossingOverIndividual(menindivid)
             genOps.GametesCreationIndividual(menindivid)
-
-        # fempopulation = split_population[0].reverse()
-
-        # for femindivid, index in fempopulation:
         i = 0
         for femindivid in split_population[0]:
             if i < len(split_population[1]):
-                newborn = genOps.ReplicateIndividual(femindivid.Chromatine1, split_population[1][i].Chromatine2)
-                population.append(newborn)
+                procreate = random.randint(1, 33)
+                if procreate == 1:
+                    newborn = genOps.ReplicateIndividual(femindivid.Chromatine1, split_population[1][i].Chromatine2)
+                    population.append(newborn)
                 i += 1
             else:
                 break

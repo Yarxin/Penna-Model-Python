@@ -1,5 +1,6 @@
 from Models.IndividualModel import Individual
 import random
+import numpy as np
 
 
 class IndividualFactory:
@@ -17,14 +18,21 @@ class IndividualFactory:
         individual = Individual()
         individual.Genotype = []
         i = 0
-        while(i < number_of_genes):
-            rnd_1 = random.randint(0, 1)
-            individual.Chromatine1.append(rnd_1)
-            rnd_2 = random.randint(0, 1)
-            individual.Chromatine2.append(rnd_2)
-            individual.T = param_T
+        while i < number_of_genes:
+            rnd_1 = random.randint(1, 20) # 5% na powstanie genu defektywnego
+            if rnd_1 == 1:
+                individual.Chromatine1.append(1)
+            else:
+                individual.Chromatine1.append(0) # 5% na powstanie genu defektywnego
+            rnd_2 = random.randint(1, 20)
+            if rnd_2 == 1:
+                individual.Chromatine2.append(1)
+            else:
+                individual.Chromatine2.append(0)
+            individual.T = 0
             individual.Procreation_age = procreation_age
-            individual.Age = random.randint(1, number_of_genes)
+            # individual.Age = random.randint(1, number_of_genes)
+            individual.Age = random.randint(1, 80)
             individual.Sex = random.randint(0, 1)
             i += 1
         return individual
