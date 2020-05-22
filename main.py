@@ -3,6 +3,9 @@ from Service.MonteCarloStepService import MonteCarloStepService
 from matplotlib import pyplot as plt
 import random as rnd
 import datetime
+import json
+from flask import Flask, request
+from flask_restful import Resource, Api
 
 ########################## Sekcja Interaktywna ##########################
 # print("Minimalną liczbę fenotypowych defektów powodujących śmierć genetyczną")
@@ -24,7 +27,7 @@ print("symulacja start: " + str(start_symulacji))
 
 # T = 50 #min number of fenotype defects, couses death
 T = 20
-number_of_individs = 1000
+number_of_individs = 100
 number_of_genes = 1000
 procreation_age = 16 #param_R
 max_population = 3 * number_of_individs
@@ -105,14 +108,14 @@ max_number_in_age = max(number_of_individs_in_age[1])
 scaled_defective_genes = []
 scaled_number_in_ages = []
 
-for value in number_of_defective_genes[1]:
-    value = value / max_number_of_def_genes
-    scaled_defective_genes.append(value)
-
-
-for value in number_of_individs_in_age[1]:
-    value = value / max_number_in_age
-    scaled_number_in_ages.append(value)
+# for value in number_of_defective_genes[1]:
+#     value = value / max_number_of_def_genes
+#     scaled_defective_genes.append(value)
+#
+#
+# for value in number_of_individs_in_age[1]:
+#     value = value / max_number_in_age
+#     scaled_number_in_ages.append(value)
 
 scaled_defective_genes.reverse()
 
@@ -122,17 +125,43 @@ czas_symulacji = stop_symulacji - start_symulacji
 print("czas trwania symulacji: " + str(czas_symulacji))
 
 # plt.plot(years, defectiveGenesList, '.')
-plt.plot(number_of_defective_genes[0], scaled_defective_genes, '.', label='liczba defektywnych genów')
-plt.plot(number_of_individs_in_age[0], scaled_number_in_ages, '.', label='liczba osobników')
-plt.grid(color='black')
-plt.legend()
-plt.xlabel("wiek osobników")
-plt.show()
+# plt.plot(number_of_defective_genes[0], scaled_defective_genes, '.', label='liczba defektywnych genów')
+# plt.plot(number_of_individs_in_age[0], scaled_number_in_ages, '.', label='liczba osobników')
+# plt.grid(color='black')
+# plt.legend()
+# plt.xlabel("wiek osobników")
+# plt.show()
+
+# iteracje = list(range(0, number_of_genes))
+# plt.plot(iteracje, sredni_wiek_list, '.')
+# plt.grid(color='black')
+# plt.xlabel("iteracja")
+# plt.ylabel("średni wiek osobników")
+# plt.show()
+
+jsonDefectiveGenes = json.dumps(number_of_defective_genes)
+jsonIndivisInAge = json.dumps(number_of_individs_in_age)
 
 
-iteracje = list(range(0, number_of_genes))
-plt.plot(iteracje, sredni_wiek_list, '.')
-plt.grid(color='black')
-plt.xlabel("iteracja")
-plt.ylabel("średni wiek osobników")
-plt.show()
+################################################################
+app = Flask(__name__)
+api = Api(app)
+
+todos = {}
+
+
+class DefectiveGenesEndpoint(Resource):
+    def get(self):
+        return {'simulation': number_of_defective_genes}
+
+
+class IndividsInAgeEndpoint(Resource):
+    def get(self):
+        return {'simulation': number_of_individs_in_age}
+
+
+api.add_resource(DefectiveGenesEndpoint, '/genes')
+api.add_resource(IndividsInAgeEndpoint, '/individuals')
+
+if __name__ == '__main__':
+    app.run(debug=True)
