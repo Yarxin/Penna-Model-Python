@@ -1,10 +1,4 @@
-from Factory.IndividualFactory import IndividualFactory
-from Service.MonteCarloStepService import MonteCarloStepService
 from Service.SimulationService import SimulationService
-from matplotlib import pyplot as plt
-import random as rnd
-import datetime
-import json
 from flask import Flask, request
 from flask_restful import reqparse, Resource, Api
 
